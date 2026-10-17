@@ -22,7 +22,7 @@ const pageDescriptions: Record<string, string> = {
   Overview: 'Here’s what’s happening with your business today.', Sales: 'Manage orders and customer revenue.', Inventory: 'Know what you have, where it is, and what needs attention.',
   Purchasing: 'Keep supplier orders on track, from request to delivery.', People: 'Your team, roles, and departments in one place.', Finance: 'A clear view of invoices and cash flow.',
   Reports: 'Understand trends and make informed decisions.', Activity: 'Stay up to date with changes across your workspace.', Settings: 'Configure your organization workspace.', 'Help center': 'Answers and support for your team.',
-  'My profile': 'Review your workspace identity and access details.',
+  'My profile': 'Review your workspace identity and access details.', Templates: 'Explore reusable charts, tables, cards, and interface patterns.',
 };
 
 function displayDate(date = new Date(), timezone = defaultWorkspacePreferences.timezone) { return formatWorkspaceDate(date, timezone); }
