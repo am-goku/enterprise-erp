@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, CalendarDays, Download, Plus, Sparkles } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, CalendarDays, ChevronDown, Download, Plus, Sparkles } from 'lucide-react';
 import { CreateRecordDialog } from './components/CreateRecordDialog';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
@@ -10,7 +10,7 @@ import { ModuleWorkspace } from './features/modules/ModuleWorkspace';
 import { dashboardApi } from './lib/mock-api';
 import { moduleApi } from './lib/module-api';
 import { downloadCsv } from './lib/csv';
-import { writeMockData } from './lib/mock-storage';
+import { readMockData, writeMockData } from './lib/mock-storage';
 import type { Activity, InvoiceStatus, Metric, Order, OrderStatus, RevenuePoint } from './types/erp';
 import type { Invoice, Product, PurchaseOrder, SavedReport, TeamMember } from './types/modules';
 import './styles.css';
@@ -24,9 +24,13 @@ const pageDescriptions: Record<string, string> = {
 function displayDate(date = new Date()) { return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }); }
 function initialsFor(name: string) { return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join(''); }
 function todayLabel(date = new Date()) { return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); }
+type AppearancePreferences = { theme: 'light' | 'dark'; textSize: 'small' | 'normal' | 'large' };
+function pageFromHash() { try { const page = decodeURIComponent(window.location.hash.slice(1)); return pageDescriptions[page] ? page : 'Overview'; } catch { return 'Overview'; } }
 
 function App() {
-  const [activePage, setActivePage] = useState('Overview');
+  const [activePage, setActivePage] = useState(pageFromHash);
+  const [appearance, setAppearance] = useState<AppearancePreferences>(() => readMockData('appearance', { theme: 'light', textSize: 'normal' }));
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 680px)').matches);
   const [query, setQuery] = useState('');
   const [metrics, setMetrics] = useState<Metric[]>([]);
   const [revenue, setRevenue] = useState<RevenuePoint[]>([]);
@@ -39,12 +43,15 @@ function App() {
   const [reports, setReports] = useState<SavedReport[]>([]);
   const [notice, setNotice] = useState('');
   const [dialogPage, setDialogPage] = useState('');
+  useEffect(() => { const syncPage = () => setActivePage(pageFromHash()); window.addEventListener('hashchange', syncPage); return () => window.removeEventListener('hashchange', syncPage); }, []);
+  useEffect(() => { document.documentElement.dataset.theme = appearance.theme; document.documentElement.dataset.textSize = appearance.textSize; writeMockData('appearance', appearance); }, [appearance]);
+  useEffect(() => { const media = window.matchMedia('(max-width: 680px)'); const syncMobile = () => setIsMobile(media.matches); media.addEventListener('change', syncMobile); return () => media.removeEventListener('change', syncMobile); }, []);
   useEffect(() => { void Promise.all([
     dashboardApi.getMetrics(), dashboardApi.getRevenue(), dashboardApi.getOrders(), dashboardApi.getActivity(),
     moduleApi.getProducts(), moduleApi.getPurchaseOrders(), moduleApi.getTeam(), moduleApi.getInvoices(), moduleApi.getReports(),
   ]).then(([m, r, o, a, p, po, t, i, rp]) => { setMetrics(m); setRevenue(r); setOrders(o); setActivity(a); setProducts(p); setPurchases(po); setPeople(t); setInvoices(i); setReports(rp); }); }, []);
   const announce = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(''), 2800); };
-  const navigate = (page: string) => { setActivePage(page); setQuery(''); };
+  const navigate = (page: string) => { setActivePage(page); setQuery(''); if (window.location.hash !== `#${encodeURIComponent(page)}`) window.location.hash = encodeURIComponent(page); };
   const saveRecord = (page: string, values: Record<string, string>) => {
     const now = new Date();
     if (page === 'Sales') {
@@ -70,19 +77,20 @@ function App() {
     setActivity((current) => { const next = [event, ...current]; writeMockData('activity', next); return next; });
     setDialogPage('');
     setActivePage(page);
+    window.location.hash = encodeURIComponent(page);
     setQuery('');
     announce(`${page} record added to your demo workspace.`);
   };
   const changeOrderStatus = (id: string, status: OrderStatus) => setOrders((current) => { const next = current.map((order) => order.id === id ? { ...order, status } : order); writeMockData('orders', next); return next; });
   const changeInvoiceStatus = (id: string, status: InvoiceStatus) => setInvoices((current) => { const next = current.map((invoice) => invoice.id === id ? { ...invoice, status } : invoice); writeMockData('invoices', next); return next; });
   const filteredActivity = activity.filter((item) => `${item.title} ${item.description} ${item.kind}`.toLowerCase().includes(query.toLowerCase()));
-  return <div className="app-shell"><Sidebar active={activePage} onNavigate={navigate} /><main className="main-shell"><Topbar page={activePage} query={query} searchable={!['Settings', 'Help center'].includes(activePage)} onQueryChange={setQuery} onOpenNotifications={() => announce('You’re all caught up.')} /><div className="page-content">
+  return <div className={`app-shell${isMobile ? ' mobile-summary-mode' : ''}`}><Sidebar active={activePage} onNavigate={navigate} /><main className="main-shell"><Topbar page={activePage} query={query} searchable={!['Settings', 'Help center'].includes(activePage)} onQueryChange={setQuery} onOpenNotifications={() => announce('You’re all caught up.')} />{isMobile && <div className="mobile-experience-notice" role="note">You’re viewing key summaries. Open this workspace on a desktop for full tables and detailed workflows.</div>}<div className="page-content">
     {activePage === 'Overview' ? <>
       <div className="welcome-row"><div><div className="welcome-kicker"><span className="live-indicator" /> YOUR BUSINESS AT A GLANCE</div><h1>Good morning, Gokul<span className="greeting-sparkle">✳</span></h1><p>{pageDescriptions.Overview}</p></div><div className="welcome-actions"><button className="outline-button" onClick={() => downloadAllOrders(orders, announce)}><Download size={16} /> Export report</button><button className="primary-button" onClick={() => setDialogPage('Sales')}><Plus size={17} /> Create new</button></div></div>
-      <div className="date-strip"><CalendarDays size={14} /><span>{todayLabel()}</span><span className="date-separator">·</span><span>Data updated just now</span><button onClick={() => announce('Showing today’s sample workspace data.')}>Today <span>⌄</span></button></div>
+      <div className="date-strip"><CalendarDays size={14} /><span>{todayLabel()}</span><span className="date-separator">·</span><span>Data updated just now</span><button onClick={() => announce('Showing today’s sample workspace data.')}>Today <ChevronDown size={13} /></button></div>
       <section className="metric-grid" aria-label="Business metrics">{metrics.length ? metrics.map((metric, index) => <article className="metric-card" key={metric.id}><div className="metric-top"><span>{metric.label}</span><span className={`metric-icon metric-icon-${index}`}>{['↗', '▤', '◎', '◫'][index]}</span></div><div className="metric-value">{metric.value}</div><div className="metric-footer"><span className={`metric-change ${metric.trend}`}>{metric.trend === 'up' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}{metric.change}</span><span>{metric.detail}</span><Sparkles size={13} className="metric-sparkle" /></div><div className={`metric-sparkline spark-${index}`}><i /><i /><i /><i /><i /><i /><i /></div></article>) : Array.from({ length: 4 }, (_, index) => <div className="metric-card metric-skeleton" key={index} />)}</section>
       <div className="dashboard-grid"><RevenueChart points={revenue} /><ActivityFeed items={activity} /></div><OrdersTable orders={orders} query={query} onStatusChange={changeOrderStatus} onViewAll={() => navigate('Sales')} onExport={() => downloadAllOrders(orders, announce)} />
-    </> : <><div className="module-welcome"><div><div className="welcome-kicker"><span className="live-indicator" /> NORTHSTAR WORKSPACE</div><h1>{activePage}</h1><p>{pageDescriptions[activePage]}</p></div><span className="module-updated"><span className="date-dot" /> Updated just now</span></div><ModuleWorkspace page={activePage} query={query} orders={orders} revenue={revenue} activities={filteredActivity} products={products} purchases={purchases} people={people} invoices={invoices} reports={reports} onAction={announce} onCreateRequest={setDialogPage} onChangeOrderStatus={changeOrderStatus} onChangeInvoiceStatus={changeInvoiceStatus} /></>}
+    </> : <><div className="module-welcome"><div><div className="welcome-kicker"><span className="live-indicator" /> NORTHSTAR WORKSPACE</div><h1>{activePage}</h1><p>{pageDescriptions[activePage]}</p></div><span className="module-updated"><span className="date-dot" /> Updated just now</span></div><ModuleWorkspace page={activePage} query={query} orders={orders} revenue={revenue} activities={filteredActivity} products={products} purchases={purchases} people={people} invoices={invoices} reports={reports} appearance={appearance} onAppearanceChange={setAppearance} onAction={announce} onCreateRequest={setDialogPage} onChangeOrderStatus={changeOrderStatus} onChangeInvoiceStatus={changeInvoiceStatus} /></>}
     <footer className="page-footer"><span>© 2026 Northstar Inc.</span><span>All systems operational <i className="live-indicator" /></span><a href="mailto:support@northstar.example">Support <span>↗</span></a></footer>
   </div></main>{notice && <div className="toast" role="status">{notice}</div>}{dialogPage && <CreateRecordDialog page={dialogPage} onClose={() => setDialogPage('')} onSubmit={saveRecord} />}</div>;
 }
