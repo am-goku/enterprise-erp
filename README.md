@@ -1,6 +1,6 @@
 # Enterprise ERP
 
-A portfolio project exploring a modular enterprise resource planning platform. The frontend is an interactive React + TypeScript dashboard prototype powered by local mock data; no backend or database is connected yet.
+A portfolio project exploring a modular enterprise resource planning platform. The frontend is a responsive React + TypeScript ERP workspace with overview, sales, inventory, purchasing, people, finance, reports, activity, settings, and help screens. It is powered by local mock data; no backend or database is connected yet.
 
 ## Frontend
 
@@ -14,7 +14,7 @@ npm run dev
 
 ## Current status
 
-- Frontend: responsive business overview and mock API/data layer
+- Frontend: responsive ERP workspace with multiple mock-data sections
 - Backend: initial NestJS API gateway scaffold
 - Infrastructure: Docker Compose configuration not set up yet
 
@@ -22,7 +22,7 @@ npm run dev
 
 ```text
 backend/api-gateway/   NestJS API gateway scaffold
-frontend/              React + TypeScript ERP dashboard
+frontend/              React + TypeScript ERP workspaces
 docker-compose.yml     Local services configuration (planned)
 ```
 

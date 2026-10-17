@@ -1,12 +1,14 @@
 # Northstar ERP — Frontend
 
-A responsive ERP operations dashboard built with React and TypeScript. It is a frontend-only prototype: all dashboard content comes from typed local mock data, with a small async mock API boundary designed to be replaced by real service calls later.
+A responsive ERP workspace built with React and TypeScript. It includes overview, sales, inventory, purchasing, people, finance, reports, activity, settings, and help screens. This frontend-only prototype uses typed local mock data and async mock API boundaries designed to be replaced by real service calls later.
 
 ## Features
 
 - Business overview with revenue, order, customer, and inventory KPIs
-- Revenue vs. expenses chart with a time range selector
-- Recent activity feed and searchable order list
+- Sales operations, pipeline, and searchable orders
+- Inventory, purchasing, people, and invoice management tables
+- Reports, activity audit feed, workspace settings, and searchable help FAQs
+- Revenue vs. expenses chart with a working time range selector
 - Workspace navigation, notifications, date controls, and action feedback
 - Responsive layout for desktop, tablet, and mobile
 - Strict TypeScript, ES module imports, and separated UI, feature, type, data, and API layers
@@ -39,19 +41,21 @@ frontend/
 ├── tsconfig.json
 ├── vite.config.ts
 └── src/
-    ├── App.tsx                    # Application shell and overview page
-    ├── main.tsx                   # React entry point
-    ├── styles.css                 # Design system and responsive styles
-    ├── components/                # Shared navigation and top bar
-    ├── data/dashboard.ts          # Sample business records
-    ├── features/dashboard/        # Dashboard chart, activity, and orders
-    ├── lib/mock-api.ts            # Async mock API methods
-    └── types/erp.ts               # Shared domain types
+    ├── App.tsx                         # Application shell and overview
+    ├── main.tsx                        # React entry point
+    ├── styles.css                      # Design system and responsive styles
+    ├── components/                     # Sidebar and top bar
+    ├── data/                           # Typed dashboard and module fixtures
+    ├── features/
+    │   ├── dashboard/                  # Overview chart, activity, and orders
+    │   └── modules/                    # ERP workspace screens
+    ├── lib/                            # Async mock API methods
+    └── types/                          # Shared ERP domain contracts
 ```
 
 ## Mock API boundary
 
-`src/lib/mock-api.ts` provides typed methods for metrics, revenue, orders, and activity. Replace those method bodies with `fetch` calls when backend endpoints are ready; the UI consumes the same TypeScript data contracts from `src/types/erp.ts`.
+`src/lib/mock-api.ts` provides typed methods for dashboard metrics, revenue, orders, and activity. `src/lib/module-api.ts` supplies mock route methods for inventory, purchasing, people, invoices, and saved reports. Replace those method bodies with `fetch` calls when backend endpoints are ready; the UI consumes the same TypeScript data contracts from `src/types/erp.ts`.
 
 ## Third-party libraries
 
@@ -65,10 +69,10 @@ frontend/
 | `@vitejs/plugin-react` | React support in Vite | Build/development dependency |
 | `@types/react`, `@types/react-dom` | React type declarations | Build/development dependency |
 
-Google Fonts (DM Sans and Manrope) are loaded by the HTML stylesheet link. The dashboard chart is built with CSS and uses no charting dependency.
+Google Fonts (DM Sans and Manrope) are loaded by the HTML stylesheet link. Charts are built with CSS and use no charting dependency.
 
 ## Notes
 
 - No API server, authentication, database, or external service is connected.
-- Sample dates and business figures are illustrative.
-- The dashboard is a polished starting point; individual ERP sections can be added as separate features as the product scope is defined.
+- Sample dates and business figures are illustrative. Module actions provide local UI feedback and are not persisted.
+- Forms, exports, filters, and other actions are local prototype interactions; records are not persisted.

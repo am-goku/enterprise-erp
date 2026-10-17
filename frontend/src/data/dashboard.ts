@@ -29,4 +29,8 @@ export const activities: Activity[] = [
   { id: 'a2', title: 'Stock running low', description: 'Wireless Headphones · 8 units left', time: '38 min ago', kind: 'inventory' },
   { id: 'a3', title: 'New team member', description: 'Alex Morgan joined Operations', time: '2 hours ago', kind: 'people' },
   { id: 'a4', title: 'Invoice paid', description: 'INV-2026-084 · $4,250.00', time: '3 hours ago', kind: 'finance' },
+  { id: 'a5', title: 'Purchase order approved', description: 'PO-2026-141 · Horizon Components', time: '4 hours ago', kind: 'inventory' },
+  { id: 'a6', title: 'Order fulfilled', description: 'ORD-8037 · Ready for carrier pickup', time: '5 hours ago', kind: 'order' },
+  { id: 'a7', title: 'Profile updated', description: 'Lana Steiner updated her team profile', time: 'Yesterday', kind: 'people' },
+  { id: 'a8', title: 'Expense recorded', description: 'EXP-2026-301 · $286.40 travel', time: 'Yesterday', kind: 'finance' },
 ];
