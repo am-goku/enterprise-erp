@@ -89,7 +89,7 @@ function HelpPage({ onAction }: { onAction: WorkspaceProps['onAction'] }) {
   return <><PageHeader icon={CircleHelp} eyebrow="NORTHSTAR SUPPORT" title="Help center" subtitle="Find a quick answer or get in touch with our customer team." /><div className="help-hero"><div className="help-hero-copy"><div className="eyebrow">HERE TO HELP</div><h2>What can we help you with?</h2><p>Search setup guides, answers, and best practices.</p><label className="help-search"><Search size={17} /><input aria-label="Search help articles" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for an answer..." /></label></div><div className="help-illustration"><CircleHelp size={70} strokeWidth={1.1} /></div></div><div className="help-content-grid"><section className="module-panel faq-panel"><div className="faq-heading"><div><h3>Frequently asked questions</h3><p>Quick answers to common questions</p></div><button className="small-outline"><SlidersHorizontal size={14} /> Browse guides</button></div>{filtered.map((faq) => { const index = faqs.indexOf(faq); return <div className="faq-item" key={faq.q}><button onClick={() => setOpen(open === index ? null : index)}><span>{faq.q}</span><ChevronDown size={16} className={open === index ? 'turned' : ''} /></button>{open === index && <p>{faq.a}</p>}</div>; })}{filtered.length === 0 && <EmptySearch query={search} />}</section><aside className="contact-card"><div className="help-icon"><Mail size={18} /></div><h3>Still need help?</h3><p>Our support team is available on weekdays and usually replies within a few hours.</p><button className="primary-button" onClick={() => onAction('Support request form opened locally.')}><Mail size={15} /> Contact support</button><div className="support-hours"><Clock3 size={14} /> Mon–Fri, 9:00 AM–6:00 PM IST</div></aside></div></>;
 }
 
-function TemplatesPage({ onAction }: { onAction: WorkspaceProps['onAction'] }) {
+function TemplatesPage({ onAction, revenue, currency }: { onAction: WorkspaceProps['onAction']; revenue: RevenuePoint[]; currency: WorkspacePreferences['currency'] }) {
   const [chart, setChart] = useState('Line');
   const chartTypes = [
     { name: 'Line', icon: LineChart }, { name: 'Bar', icon: BarChart3 },
@@ -101,6 +101,7 @@ function TemplatesPage({ onAction }: { onAction: WorkspaceProps['onAction'] }) {
   ];
   return <>
     <PageHeader icon={Shapes} eyebrow="DESIGN SYSTEM" title="Templates" subtitle="Reusable data visualizations and interface patterns for your workspace." />
+    <section className="template-section"><div className="template-section-heading"><div><h3>Revenue overview</h3><p>The same grouped column chart used on the workspace dashboard, with revenue and expenses shown side by side.</p></div></div><RevenueChart points={revenue} currency={currency} /></section>
     <section className="template-section">
       <div className="template-section-heading"><div><h3>Charts</h3><p>Choose a visualization to preview a reusable chart pattern.</p></div></div>
       <div className="template-chart-tabs" role="tablist" aria-label="Chart types">{chartTypes.map(({ name, icon: Icon }) => <button key={name} type="button" role="tab" aria-selected={chart === name} className={chart === name ? 'selected' : ''} onClick={() => setChart(name)}><Icon size={15} />{name}</button>)}</div>
@@ -132,7 +133,7 @@ export function ModuleWorkspace(props: WorkspaceProps) {
     case 'Activity': return <ActivityPage activities={props.activities} onAction={props.onAction} />;
     case 'Settings': return <SettingsPage onAction={props.onAction} appearance={props.appearance} onAppearanceChange={props.onAppearanceChange} workspacePreferences={props.workspacePreferences} onWorkspacePreferencesChange={props.onWorkspacePreferencesChange} />;
     case 'My profile': return <ProfilePage onSignOut={props.onSignOut} />;
-    case 'Templates': return <TemplatesPage onAction={props.onAction} />;
+    case 'Templates': return <TemplatesPage onAction={props.onAction} revenue={props.revenue} currency={props.workspacePreferences.currency} />;
     case 'Help center': return <HelpPage onAction={props.onAction} />;
     default: return null;
   }
