@@ -93,7 +93,7 @@ function TemplatesPage({ onAction, revenue, currency }: { onAction: WorkspacePro
   const [chart, setChart] = useState('Line');
   const chartTypes = [
     { name: 'Line', icon: LineChart }, { name: 'Bar', icon: BarChart3 },
-    { name: 'Area', icon: AreaChart }, { name: 'Donut', icon: PieChart },
+    { name: 'Area', icon: AreaChart }, { name: 'Donut', icon: PieChart }, { name: 'Grouped columns', icon: BarChart3 },
   ];
   const demoRows = [
     ['ORD-8042', 'Olivia Rhye', 'Paid', '$1,240'], ['ORD-8041', 'Phoenix Baker', 'Processing', '$860'],
@@ -101,15 +101,14 @@ function TemplatesPage({ onAction, revenue, currency }: { onAction: WorkspacePro
   ];
   return <>
     <PageHeader icon={Shapes} eyebrow="DESIGN SYSTEM" title="Templates" subtitle="Reusable data visualizations and interface patterns for your workspace." />
-    <section className="template-section"><div className="template-section-heading"><div><h3>Revenue overview</h3><p>The same grouped column chart used on the workspace dashboard, with revenue and expenses shown side by side.</p></div></div><RevenueChart points={revenue} currency={currency} /></section>
     <section className="template-section">
       <div className="template-section-heading"><div><h3>Charts</h3><p>Choose a visualization to preview a reusable chart pattern.</p></div></div>
       <div className="template-chart-tabs" role="tablist" aria-label="Chart types">{chartTypes.map(({ name, icon: Icon }) => <button key={name} type="button" role="tab" aria-selected={chart === name} className={chart === name ? 'selected' : ''} onClick={() => setChart(name)}><Icon size={15} />{name}</button>)}</div>
       <div className="template-chart-grid">
-        <article className="module-panel template-chart-card"><div className="template-card-heading"><div><span>MONTHLY REVENUE</span><h4>{chart} chart</h4></div><button className="icon-button" aria-label="Chart options" onClick={() => onAction('Chart options are available in this template preview.')}><SlidersHorizontal size={15} /></button></div>
-          <div className={`template-visual template-visual-${chart.toLowerCase()}`} aria-label={`${chart} chart preview`}>
+        <article className="module-panel template-chart-card">{chart !== 'Grouped columns' && <div className="template-card-heading"><div><span>MONTHLY REVENUE</span><h4>{chart} chart</h4></div><button className="icon-button" aria-label="Chart options" onClick={() => onAction('Chart options are available in this template preview.')}><SlidersHorizontal size={15} /></button></div>}
+          {chart === 'Grouped columns' ? <RevenueChart points={revenue} currency={currency} template /> : <div className={`template-visual template-visual-${chart.toLowerCase()}`} aria-label={`${chart} chart preview`}>
             {chart === 'Donut' ? <div className="template-donut"><div><strong>$284.6k</strong><span>Revenue</span></div></div> : chart === 'Bar' ? <div className="template-bars">{[48, 72, 55, 88, 64, 96, 70, 82, 58, 91, 68, 100].map((height, index) => <i key={index} style={{ height: `${height}%`, animationDelay: `${index * 35}ms` }} />)}</div> : <svg viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label={`${chart} trend from January to December`}><defs><linearGradient id="templateAreaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#5e84d6" stopOpacity=".25"/><stop offset="100%" stopColor="#5e84d6" stopOpacity="0"/></linearGradient></defs><path className="template-area-fill" d="M0 151 C45 140 54 104 103 119 S158 151 205 91 S264 121 310 77 S357 102 411 53 S470 79 510 37 S567 59 600 13 L600 190 L0 190Z"/><path className="template-line" d="M0 151 C45 140 54 104 103 119 S158 151 205 91 S264 121 310 77 S357 102 411 53 S470 79 510 37 S567 59 600 13"/></svg>}
-          </div><div className="template-chart-labels"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Dec</span></div>
+          </div>} {chart !== 'Grouped columns' && <div className="template-chart-labels"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Dec</span></div>}
         </article>
         <article className="module-panel template-chart-card template-breakdown"><div className="template-card-heading"><div><span>REVENUE MIX</span><h4>By department</h4></div><button className="small-outline" onClick={() => onAction('Revenue breakdown details opened.')}>View report <OpenIcon size={13} /></button></div><div className="template-mix-list">{[['Sales', '42%', 'mix-blue'], ['Operations', '28%', 'mix-violet'], ['Services', '18%', 'mix-green'], ['Other', '12%', 'mix-amber']].map(([name, value, color]) => <div className="template-mix-row" key={name}><span><i className={color} />{name}</span><strong>{value}</strong><div><i className={color} style={{ width: value }} /></div></div>)}</div></article>
       </div>
