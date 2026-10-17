@@ -107,3 +107,12 @@ html[data-theme="dark"] .date-strip button{background:#24334a;color:#dce4f1}
   .mobile-summary-mode .topbar-actions .search-box{width:min(38vw,150px)}
   .mobile-summary-mode .topbar-date{display:none}
 }
+/* Sorting and pagination controls for module lists. */
+.module-toolbar>div{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.module-pagination{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:9px 14px;border-top:1px solid #f0f2f5;color:#8a96a8;font-size:8px}
+.module-pagination>div{display:flex;gap:6px}
+.module-pagination .small-outline{padding:5px 8px;font-size:8px}
+.module-pagination .small-outline:disabled{opacity:.45;cursor:not-allowed}
+.preference-hint{margin-top:-5px;color:#8d99aa;font-size:8px;font-weight:400}
+html[data-theme="dark"] .module-pagination{border-color:#334155;color:#a9b7ca}
+@media(max-width:680px){.mobile-summary-mode .module-pagination{display:none}}
