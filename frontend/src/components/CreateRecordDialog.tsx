@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
 
 export interface CreateField { name: string; label: string; placeholder: string; type?: 'text' | 'email' | 'number' | 'date'; required?: boolean; }
@@ -43,6 +43,13 @@ interface CreateRecordDialogProps { page: string; onClose: () => void; onSubmit:
 export function CreateRecordDialog({ page, onClose, onSubmit }: CreateRecordDialogProps) {
   const pageFields = fields[page] ?? [];
   const [error, setError] = useState('');
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', handleKeyDown); };
+  }, [onClose]);
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(event.currentTarget).entries()) as Record<string, string>;
