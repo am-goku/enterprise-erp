@@ -22,6 +22,11 @@ export const orders: Order[] = [
   { id: 'ORD-8040', customer: 'Lana Steiner', initials: 'LS', email: 'lana.steiner@acme.com', date: 'Oct 16, 2026', amount: 2390, status: 'Pending', color: 'peach' },
   { id: 'ORD-8039', customer: 'Demi Wilkinson', initials: 'DW', email: 'demi.wilkinson@acme.com', date: 'Oct 16, 2026', amount: 540, status: 'Paid', color: 'mint' },
   { id: 'ORD-8038', customer: 'Candice Wu', initials: 'CW', email: 'candice.wu@acme.com', date: 'Oct 15, 2026', amount: 1725, status: 'Refunded', color: 'rose' },
+  { id: 'ORD-8037', customer: 'Drew Cano', initials: 'DC', email: 'drew.cano@acme.com', date: 'Oct 14, 2026', amount: 980, status: 'Processing', color: 'mint' },
+  { id: 'ORD-8036', customer: 'Orlando Diggs', initials: 'OD', email: 'orlando.diggs@acme.com', date: 'Oct 14, 2026', amount: 2180, status: 'Paid', color: 'blue' },
+  { id: 'ORD-8035', customer: 'Andi Lane', initials: 'AL', email: 'andi.lane@acme.com', date: 'Oct 13, 2026', amount: 725, status: 'Pending', color: 'peach' },
+  { id: 'ORD-8034', customer: 'Kate Morrison', initials: 'KM', email: 'kate.morrison@acme.com', date: 'Oct 12, 2026', amount: 1640, status: 'Paid', color: 'violet' },
+  { id: 'ORD-8033', customer: 'Natali Craig', initials: 'NC', email: 'natali.craig@acme.com', date: 'Oct 11, 2026', amount: 410, status: 'Refunded', color: 'rose' },
 ];
 
 export const activities: Activity[] = [

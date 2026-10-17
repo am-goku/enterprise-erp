@@ -5,9 +5,11 @@ A responsive ERP workspace built with React and TypeScript. It includes overview
 ## Features
 
 - Business overview with revenue, order, customer, and inventory KPIs
-- Sales operations, pipeline, and searchable orders
+- Sales operations, pipeline, searchable and status-filtered orders with pagination
 - Inventory, purchasing, people, and invoice management tables
 - Reports, activity audit feed, workspace settings, and searchable help FAQs
+- Local demo CRUD for orders, products, purchase orders, team members, invoices, and saved reports
+- CSV exports for dashboard orders and module datasets; status and stock filters
 - Revenue vs. expenses chart with a working time range selector
 - Workspace navigation, notifications, date controls, and action feedback
 - Responsive layout for desktop, tablet, and mobile
@@ -74,5 +76,6 @@ Google Fonts (DM Sans and Manrope) are loaded by the HTML stylesheet link. Chart
 ## Notes
 
 - No API server, authentication, database, or external service is connected.
-- Sample dates and business figures are illustrative. Module actions provide local UI feedback and are not persisted.
-- Forms, exports, filters, and other actions are local prototype interactions; records are not persisted.
+- Sample dates and business figures are illustrative.
+- Created records and order/invoice status changes are stored in browser `localStorage` under the `northstar:` prefix. Clearing browser storage resets the demo. This is only local prototype persistence, not a database or shared workspace.
+- CSV exports, filters, settings, and other actions run in the browser; no API server or external service is connected.
